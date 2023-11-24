@@ -1,20 +1,34 @@
 #read csv file
 import csv
 import json
+import boto3
+import io
 
 def readcsv(file):
- with open(file) as csvfile:
-    reader = csv.DictReader(csvfile)
-    for row in reader:
-        print(row)
+    csv_reader = csv.reader(io.StringIO(file))
+    next(csv_reader)
+    
+    dynamodb = boto3.resource('dynamodb') 
+    table = dynamodb.Table('tablacaro')
+    for row in csv_reader:
+        item = {
+            'id': row[0],
+            'nombre': row[1],
+            'apellido': row[2],
+        }
+        table.put_item(Item=item) 
         
 def lambda_handler(event, context):
     
     bucket = event['Records'][0]['s3']['bucket']['name']
     objeto = event['Records'][0]['s3']['objeto']['key']
     
-    print(bucket)
-    print(objeto)
+    s3 = boto3.client('s3')
+    
+    response = s3.get_object(Bucket=bucket, Key=objeto) 
+    csvfile = response['Body'].read().decode('utf-8') 
+    
+    readcsv(csvfile) 
    
     return {
         'statusCode': 200,
