@@ -108,7 +108,7 @@ while opcion != 0:
         eliminar_elemento_tabla(nombre_tabla, id)   
     elif opcion == 6:
        #convertir imagen a bytes
-        with open('imagen.jpg', 'rb') as f:     #para insertar la imagen solo en imagen.jpg pongo el nombre de la mia.
+        with open("IMAGEN.jpeg", 'rb') as f:     
             imagen = f.read()
             reconocer_celebridad_imagen(imagen)
     elif opcion == 0:
